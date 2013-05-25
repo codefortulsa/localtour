@@ -1,0 +1,52 @@
+i{
+    float:left;
+    margin-left:5%;
+}
+
+#mapPage {
+    width: 100%;
+    height: 100%;
+}
+
+#map_content {
+    padding: 1%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+li #map_content {
+    padding: 1%;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+
+.loc_labels {
+  color: green;
+  font-family: "Lucida Grande", "Arial", sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  width: 50px;     
+  overflow: wrap;
+}
+.pointer {
+  height: 0;
+  width: 0;
+  border-left: 3em solid transparent;
+  border-right: 3em solid transparent;
+  border-bottom: 12em solid black;
+  margin: -10px 0 0 -40px;
+  top: 40%;
+  left: 50%;
+  position: absolute;
+}
+.n {
+  top: 20%;
+  left:50%;
+  position:absolute;
+  font:8em Helvetica;
+  margin: 0 0 0 -40px;
+}

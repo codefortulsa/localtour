@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="description" content="proto-tour">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	  <meta name="apple-mobile-web-app-capable" content="yes">
+		
+		<!-- FontAwesome - http://fortawesome.github.io/Font-Awesome/ -->
+      <link rel="stylesheet" href="css/font-awesome.min.css" />
+
+		<!-- jQueryMobileCSS - original without styling -->
+      <link rel="stylesheet" href="css/jquerymobile.css" />
+
+		<!-- nativeDroid core CSS -->
+      <link rel="stylesheet" href="css/jquerymobile.nativedroid.css" />
+
+		<!-- nativeDroid: Light/Dark -->
+      <link rel="stylesheet" href="css/jquerymobile.nativedroid.light.css"  id='jQMnDTheme' />
+
+		<!-- nativeDroid: Color Schemes -->
+      <link rel="stylesheet" href="css/jquerymobile.nativedroid.color.blue.css" id='jQMnDColor' />
+
+
+      <link rel="stylesheet"  href="css/extras.css" rel="stylesheet">
+
+         <title>Localwiki Explorer</title>
+
+      <script src= "vendor/couchapp/jquery-1.8.2.min.js"></script>
+      <script src= "http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+
+  </head>
+  <body>
+      <div id="menu" data-role="page" data-theme='b'>
+              <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                  <h1 class="ui-title" >
+                      <i class="icon-map-marker">&nbsp;Localwiki Viewer</i>
+                  </h1>
+              </div>
+                <ul class="tour-options" data-role="listview">
+                    <li>
+                        <a href='#pages' class="ui-link"><i class="icon-copy icon-2x pull-left"></i>Pages</a>
+                    </li>
+                    <li>
+                        <a href='#tags' class="ui-link"><i class="icon-tags icon-2x pull-left"></i>Tags</a>
+                    </li>
+                    <li>
+                        <a href='#users' class="ui-link"><i class="icon-user icon-2x pull-left"></i>Users</a>
+                    </li>
+                    <li>
+                        <a href='#site' class="ui-link"><i class="icon-cogs icon-2x pull-left"></i>Settings</a>
+                    </li>
+                    <li>
+                        <a href='#credits' class="ui-link"><i class="icon-trophy icon-2x pull-left"></i>Credits</a>
+                    </li>
+
+                </ul>
+              
+      </div>
+
+
+        <div id="site" data-role="page" data-theme='b'>
+            <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                <a href="#menu" ><i class="icon-angle-left"></i></a>
+                <h1 id="domain" class="ui-title" >
+                </h1>
+            </div>
+            <ul id="wikilist" class="tour-options" data-role="listview">
+            </ul>
+        </div>
+
+        <div id="pages" data-role="page" data-theme='b'>
+            <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                <a data-rel="back" ><i class="icon-angle-left"></i></a>
+                <h1 class="ui-title" >
+                Pages
+                </h1>
+            </div>
+            <ul id="pagelist" class="tour-options" data-role="listview">
+            </ul>
+        </div>
+         
+        <div id="page_detail" data-role="page" data-theme='b'>
+            <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                <a href="#menu" ><i class="icon-home"></i></a>
+                <h1 id="page_title" class="ui-title" >
+                Details
+                </h1>
+            </div>
+            <ul id="detailist" class="tour-options" data-role="listview">
+            </ul>
+        </div>
+ 
+        <div id="tags" data-role="page" data-theme='b'>
+            <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                <a data-rel="back" ><i class="icon-angle-left"></i></a>
+                <h1 class="ui-title" >
+                Tags
+                </h1>
+            </div>
+            <ul id="taglist" class="tour-options" data-role="listview">
+            </ul>
+        </div>
+        
+        <div id="users" data-role="page" data-theme='b'>
+             <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                 <a href="#menu" ><i class="icon-angle-left"></i></a>
+                 <h1 class="ui-title" >Users</h1>
+             </div>
+             <ul id="userlist" class="tour-options" data-role="listview">
+             </ul>
+         </div>
+        
+         <div id="credits" data-role="page" data-theme='b'>
+              <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                  <a data-rel="back" ><i class="icon-angle-left"></i></a>
+                  <h1 class="ui-title" >Credits</h1>
+        </div>
+              
+              <ul id="creditlist" class="tour-options" data-role="listview">
+                  <li>JQM stylings by nativedroid at &nbsp;
+                      <a class="ui-link" href="http://nativedroid.godesign.ch">nativedroid.godesign.ch</a>
+                  </li>
+                  <li>Icons by:
+                      <a class="ui-link" href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>
+                  </li>
+                  <li>GeoJSON to Google Maps Help:
+                      <a class="ui-link" href="https://github.com/JasonSanford/GeoJSON-to-Google-Maps.git">JasonSanford/GeoJSON-to-Google-Maps</a>
+                  </li>
+                  <li>And, of course, jquery and jquerymobile goodness!
+                  </li>
+                  
+                  
+                 <!--                   http://timeago.yarp.com/
+                                   --> 
+                  
+                  
+              </ul>
+          </div>
+
+    	<!-- jQuery / jQueryMobile Scripts -->
+        
+        <script type="text/javascript"  src="http://maps.google.com/maps/api/js?key=AIzaSyBIN_IsvlHoxb6QQtIhB1OjisrFuuCixAQ&libraries=geometry&sensor=false"></script>
+        <script type="text/javascript" src="js/jquery.timeago.js"></script>
+        <script type="text/javascript" src="js/markerwithlabel.js"></script>
+        <script type="text/javascript" src="js/tour_map.js"></script>
+        <script type="text/javascript" src="js/GeoJSON.js"></script>
+        <script type="text/javascript" src="js/localwiki.js"></script>
+    
+<script>
+$(document).ready(function() {
+    
+    // must set the url before anything else can happen
+    localwiki.url("www.tulsawiki.org");
+
+    //build a map
+    
+
+    
+    //helper funcions
+    var objectas_listitems = function (obj){
+        var
+        li_html="";
+        for (var p in obj){
+            li_html+="<li id='"+p+"'><strong>"+p+"</strong>:&nbsp;"+obj[p]+"</li>"        
+        };
+        return li_html;
+    };
+    
+    var objectas_html = function (obj){
+        var
+        li_html="";
+        for (var p in obj){
+            li_html+="<strong>"+p+"</strong>:&nbsp;"+obj[p]+"</br>"        
+        };
+        return li_html;
+    };
+    
+    var objectsetas_listitems = function (obj,link_name){
+        var pages_html="",
+            pages=obj.objects;
+
+        link_name= ((link_name in pages[0]) && link_name) || "name";
+
+        for (p=0; p < pages.length; p++){
+             pages_html+="<li><strong>"+pages[p][link_name]+"</strong>:&nbsp;<a\
+             data-resource_uri='"+pages[p].resource_uri+"'>\
+             "+pages[p].resource_uri+"</a></li>"        
+        };
+        return pages_html;
+    };
+    
+    var detail_click = function(event) {
+        event.preventDefault();
+        this_uri=$(this).data('resource_uri')
+        //this is a cheat since jqm doesn't allow easy passing of state from page through # redirects
+        localwiki.current_page(this_uri);
+        $.mobile.changePage("#page_detail");
+    };
+    
+    var add_more_link = function (listview,resource){
+        $("li:last-child",listview).after("<li>\
+        <a class='ui-link wiki-paginate' data-wiki-next='"+resource+"' >More</a></li>")
+        $(".wiki-paginate").on ("click",next_page); 
+    };
+    var next_page = function (event){
+        event.preventDefault();
+        $.mobile.loading( 'show', {
+            text: 'Getting more',
+            textVisible: true,
+        })
+        var next=$(this).data("wiki-next");
+        calling_list=$(this).parents("[data-role='listview']")
+        localwiki.next(next,calling_list)
+            .done(function(caller,obj){
+                caller.html(objectsetas_listitems(obj,"username"));
+                $("li a",caller).on('click', detail_click);    
+                $(".wiki-paginate").click(next_page); 
+                add_more_link(caller,obj.meta.next);
+                caller.listview('refresh').trigger( "create" );
+                $.mobile.loading('hide');
+            })
+            .fail(function(){
+                $.mobile.loading('hide');
+            });            
+    };
+
+    var findBounds = function (arrayLatlng){        
+        var maxN=maxS=arrayLatlng[0].lat();
+        var maxW=maxE=arrayLatlng[0].lng();
+
+        for (var p in arrayLatlng){
+            if (arrayLatlng[p]&&arrayLatlng[p].lat()){
+                thislat=arrayLatlng[p].lat();
+                    maxN = (thislat > maxN) ? thislat : maxN;
+                    maxS = (thislat < maxS) ? thislat : maxS;
+                    
+                thislng=arrayLatlng[p].lng()
+                    maxW = (thislng < maxW) ? thislng : maxW;
+                    maxE = (thislng > maxE) ? thislng : maxE; 
+            }
+        };
+
+        return  new google.maps.LatLngBounds(
+                new google.maps.LatLng(maxS,maxW), 
+                new google.maps.LatLng(maxN,maxE));
+        
+    };
+    
+    $("#site").on("pageinit",function(){
+        localwiki.site(function(obj){
+            $("#domain").text(obj.domain);
+            $("#wikilist").html(objectas_listitems(obj)).listview('refresh').trigger( "create" );
+        });
+    });
+    
+    $("#page_detail").on("pageshow",function(){
+        localwiki.page(localwiki.current_page(),function(obj){
+            $("#page_title").text(obj.name)
+            $("#detailist").html(objectas_listitems(obj)).listview('refresh').trigger( "create" );  
+            localwiki.map(obj.map, function (data) {
+                $("#detailist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
+                var ttown= ttown || new tulsa_map(document.getElementById("map_content"));
+                var pointArray=[];
+                
+                geoJSONlist=data.geom.geometries;
+
+                for (var geom in geoJSONlist){
+                    var gglV = new GeoJSON(geoJSONlist[geom], {});
+                    if (gglV.error){
+                        // Handle the error.
+                    }else{
+                        gglV.setMap(ttown);
+                        if(gglV.position){
+                            pointArray.push(gglV.position);                            
+                        }
+                        if(gglV.getPaths){
+                            gglV.getPath().forEach(function(position,idx){
+                                pointArray.push(new google.maps.LatLng(position.lat(),position.lng()));                            
+                            
+                            });
+                            
+                        }
+                    }
+                    
+                }
+                ttown.fitBounds(findBounds(pointArray));
+            });
+            
+        });
+    });
+    
+    $("#pages").on("pageinit",function(){
+        localwiki.pages(function(obj){
+            $("#pagelist").html(objectsetas_listitems(obj,"name"));
+            $("#pages li a").on('click', detail_click);                
+            add_more_link($("#pagelist"),obj.meta.next);
+            $("#pagelist").listview('refresh').trigger( "create" );  
+
+        });
+    });   
+    
+    $("#tags").on("pageinit",function(){
+        localwiki.tags(function(obj){
+            $("#taglist").html(objectsetas_listitems(obj,"name"));
+            $("#tags li a").on('click', detail_click);
+            add_more_link($("#taglist"),obj.meta.next);
+            $("#taglist").listview('refresh').trigger( "create" );  
+                            
+        });
+    });    
+
+    $("#users").on("pageinit",function(){
+        localwiki.users(function(obj){
+            $("#userlist").html(objectsetas_listitems(obj,"username"))
+            $("#users li a").on('click', detail_click);    
+            add_more_link($("#userlist"),obj.meta.next);
+            $("#userlist").listview('refresh').trigger( "create" );
+            
+        });
+    });
+
+});    
+</script>    
+    
+  </body>
+</html>
