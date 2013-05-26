@@ -26,9 +26,8 @@ var tulsa_map= function (element) {
         
         var map_element = null,
         tulsaLatlng =  tulsaLatlng ||  new google.maps.LatLng(36.1539,-95.9925),
-        dispatchMapOptions = {
-            visualRefresh:true,
-            zoom: 19,
+        tulsaMapOptions = {
+            zoom: 16,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center:tulsaLatlng,
             panControl: false,
@@ -54,8 +53,8 @@ var tulsa_map= function (element) {
 
     if (element !== map_element){
         map_element = element;
-        
-        this.map = new google.maps.Map(element, dispatchMapOptions);        
+        google.maps.visualRefresh=true;
+        this.map = new google.maps.Map(element, tulsaMapOptions);        
     }
 
     return this.map;

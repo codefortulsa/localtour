@@ -12,15 +12,7 @@ var localwiki = (function () {
         }
         return options.url;        
     };
-    
-    wiki.current_page = function (resource_uri){
-        if (resource_uri){
-            options.current_page=resource_uri;                
-        }
-        return options.current_page;        
-    };
-    
-    
+
     var wikiapi = function (resource,ajax_params){
         var dfd = new $.Deferred(),
         ajax_params=ajax_params ||{};
@@ -41,50 +33,118 @@ var localwiki = (function () {
         }
         return dfd.promise();
     };
-
-    wiki.site = function (callback,params){
-        wikiapi("/api/site").done(function(data){
-           callback(data.objects[0]); 
-        });
-    };
-
-    wiki.pages = function (callback,params){
-        wikiapi("/api/page").done(function(data){
-           callback(data); 
-        });
+    
+    wiki.current_page = function (resource_uri){
+        if (resource_uri){
+            options.current_page=resource_uri;                
+        }
+        return options.current_page;        
     };
     
-    wiki.page = function(resource_uri, callback, params) {
+    wiki.site = function (params){
+        var dfd = new $.Deferred();
+
+        wikiapi("/api/site")
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
+
+    };
+
+
+
+    wiki.pages = function (){
+        var dfd = new $.Deferred();
+
+        wikiapi("/api/page")
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
+    };
+    
+    wiki.page = function(resource_uri, params) {
+        var dfd = new $.Deferred();
+
         wikiapi(resource_uri)
-            .done(function(data) {
+            .done( function(data) {
                 //fully qualify src with url
-                if (data.content.indexOf("src=")){
+                if (data.content && data.content.indexOf("src=")){
                     var src = data.content.split('src="');
                     data.content = src.join('src="http://' + options.url + '/' + data.name + '/');
                 }
-                callback(data);
-            });
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
     };
 
-    wiki.tags = function (callback,params){
-        wikiapi("/api/tag").done(function(data){
-           callback(data); 
-        });
+
+    wiki.tags =  function (tagname){
+        var dfd = new $.Deferred();
+        // tags__slug
+        // tags__slug__in
+        if (tagname){
+            wikiapi("/api/page_tags",{"tags__slug__in":tagname})
+                .done( function(data) {
+                      dfd.resolve(data);
+                })
+                .fail( function(data) {
+                      dfd.reject(data);
+                })
+        } 
+        else {
+            wikiapi("/api/tag")
+                .done( function(data) {
+                      dfd.resolve(data);
+                })
+                .fail( function(data) {
+                      dfd.reject(data);
+                })
+        }
+        
+    
+        return dfd.promise();
+
     };
+
+
 
     wiki.users = function (callback,params){
-        wikiapi("/api/user",params).done(function(data){
-           callback(data); 
-        });
+        var dfd = new $.Deferred();
+
+        wikiapi("/api/user")
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
     };
 
-    wiki.map = function(resource,callback) {
-
+    wiki.map = function(resource) {
+        var dfd = new $.Deferred();
+        
         if (resource){
-            wikiapi(resource).done(function(data){
-               callback(data); 
-            });
+            wikiapi(resource)
+                .done( function(data) {
+                      dfd.resolve(data);
+                })
+                .fail( function(data) {
+                      dfd.reject(data);
+                })
         }
+        return dfd.promise();
     };
 
     wiki.next = function (resource,caller,callback){
