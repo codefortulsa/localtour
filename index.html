@@ -34,7 +34,7 @@
       <div id="menu" data-role="page" data-theme='b'>
               <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
                   <h1 class="ui-title" >
-                      <i class="icon-flag icon-2x pull-left icon-border">&nbsp;Localtour</i>
+                      <i class="icon-flag">&nbsp;Localtour</i>
                   </h1>
               </div>
                 <ul class="tour-options" data-role="listview">
@@ -86,9 +86,21 @@
                 Details
                 </h1>
             </div>
-            <ul id="detailist" class="tour-options" data-role="listview">
+            <ul id="detailist" class="page-list" data-role="listview">
             </ul>
         </div>
+ 
+        <div id="tour_detail" data-role="page" data-theme='b'>
+             <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
+                 <a href="#menu" ><i class="icon-home"></i></a>
+                 <h1 id="page_title" class="ui-title" >
+                 Tour
+                 </h1>
+             </div>
+             <ul id="tourlist" class="tour-list" data-role="listview">
+             </ul>
+         </div>
+ 
  
         <div id="tags" data-role="page" data-theme='b'>
             <div data-role="header" data-position="fixed"  data-theme="b" role="banner">

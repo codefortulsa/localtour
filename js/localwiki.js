@@ -13,6 +13,10 @@ var localwiki = (function () {
         return options.url;        
     };
 
+
+
+    
+    
     var wikiapi = function (resource,ajax_params){
         var dfd = new $.Deferred(),
         ajax_params=ajax_params ||{};
@@ -40,7 +44,7 @@ var localwiki = (function () {
         }
         return options.current_page;        
     };
-    
+
     wiki.site = function (params){
         var dfd = new $.Deferred();
 
@@ -55,12 +59,39 @@ var localwiki = (function () {
 
     };
 
-
-
-    wiki.pages = function (){
+    
+    wiki.search = function (params){
         var dfd = new $.Deferred();
 
-        wikiapi("/api/page")
+        wikiapi("/api/page/search",params)
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
+    };
+
+    wiki.uri = function (resource_uri,params){
+        var dfd = new $.Deferred();
+
+        wikiapi(resource_uri,params)
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
+    };
+
+    wiki.pages = function (params){
+        
+        var dfd = new $.Deferred(),
+        params = params || {};
+
+        wikiapi("/api/page",params)
             .done( function(data) {
                 dfd.resolve(data);
             })
@@ -70,7 +101,7 @@ var localwiki = (function () {
         return dfd.promise();
     };
     
-    wiki.page = function(resource_uri, params) {
+    wiki.page = function(resource_uri) {
         var dfd = new $.Deferred();
 
         wikiapi(resource_uri)
