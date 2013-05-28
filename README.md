@@ -18,7 +18,7 @@ localwiki.js  -- a simple javascript library to handle the localwiki API.  Event
 
 tour_map.js  -- javascript object for google maps
 
-geohelper.js  -- intend for any extra help translating or dealing with geoJSON and Google Maps
+geohelper.js  -- intended for any extra help translating or dealing with geoJSON and Google Maps
 
 GeoJSON.js -- Helpful library for converting geoJSON object from localwiki into Google Maps  (https://github.com/JasonSanford/GeoJSON-to-Google-Maps)
 

@@ -2,8 +2,10 @@
 jQuery(document).ready(function() {
 
 // set the localwiki url before anything else can happen
+
+    // localwiki.url("https://trianglewiki.org");
     
-    localwiki.url("www.tulsawiki.org");
+    localwiki.url("http://www.tulsawiki.org");
 
 
 //html render funcions
@@ -87,7 +89,8 @@ jQuery(document).ready(function() {
             textVisible: true,
         })
         var next=$(this).data("wiki-next"),
-            calling_list=$(this).parents("[data-role='listview']")
+            calling_list=$(this).parents("[data-role='listview']");
+            
         localwiki.next(next,calling_list)
             .done(function(caller,obj){
                 caller.html(objectsetas_listitems(obj,"username"));
@@ -101,8 +104,6 @@ jQuery(document).ready(function() {
                 $.mobile.loading('hide');
             });            
     };
-
-
     
 //jqm page behavior     
     
@@ -128,7 +129,6 @@ jQuery(document).ready(function() {
                     $("#page_title").text(obj.name);
                     
                     $("#tourlist").html(tour_listitems(obj));  
-                    
                     localwiki.map(obj.map)
                         .done(function (data) {
                             $("#tourlist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
@@ -180,10 +180,6 @@ jQuery(document).ready(function() {
                 add_more_link($("#localtours"),obj.meta.next);
                 $("#localtours").listview('refresh').trigger( "create" );
             })
-            .then(function(){
-                
-                
-            });
     });
 
 

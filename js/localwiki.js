@@ -4,7 +4,9 @@ var localwiki = (function () {
         options={};
         
     // set default url
-    options.url=options.url || 'www.tulsawiki.com'
+    options.url=options.url || 'http://www.tulsawiki.com';
+    
+    
     
     wiki.url = function (url){
         if (url){
@@ -13,18 +15,14 @@ var localwiki = (function () {
         return options.url;        
     };
 
-
-
-    
-    
     var wikiapi = function (resource,ajax_params){
         var dfd = new $.Deferred(),
         ajax_params=ajax_params ||{};
-        // ajax_params.format='json'
+        ajax_params.format='json'
         if (resource){
             $.ajax({
               type:"GET",
-              url: "http://"+options.url+resource,
+              url: options.url+resource,
               data:ajax_params
               })
             .done( function(data) {
@@ -142,10 +140,7 @@ var localwiki = (function () {
                       dfd.reject(data);
                 })
         }
-        
-    
         return dfd.promise();
-
     };
 
 
