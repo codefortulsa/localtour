@@ -3,6 +3,7 @@ localtour
 
 HTML5 Mobile web-app for displaying information from a Localwiki deployment as an tour.
 
+This app is hosted as a github page: http://codefortulsa.github.com/localtour
 
 Explaining the files:
 

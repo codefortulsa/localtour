@@ -20,9 +20,6 @@ var tulsa_styles=[
 ];
 
 
-
-
-
 // tfdd map 
 var tulsa_map= function (element) {    
     // 'tulsa 36.1539,-95.9925'

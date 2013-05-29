@@ -6,8 +6,6 @@ var localwiki = (function () {
     // set default url
     options.url=options.url || 'http://www.tulsawiki.com';
     
-    
-    
     wiki.url = function (url){
         if (url){
             options.url=url;                
