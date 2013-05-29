@@ -18,14 +18,15 @@ var localwiki = (function () {
     var wikiapi = function (resource,ajax_params){
         var dfd = new $.Deferred(),
         ajax_params=ajax_params ||{};
-        ajax_params.format='json'
         if (resource){
             $.ajax({
               type:"GET",
               url: options.url+resource,
-              data:ajax_params
+              data:ajax_params,
+              dataType:'json',
               })
             .done( function(data) {
+                  
                   dfd.resolve(data);
               }
             )
