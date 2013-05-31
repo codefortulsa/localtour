@@ -123,6 +123,12 @@ jQuery(document).ready(function() {
         });//end page done
     });
     
+    var posWatchID,
+    posOptions = {
+      enableHighAccuracy: true,
+    };
+    
+    
     $("#tour_detail").on("pageshow",function(){
             localwiki.page(localwiki.current_page())
                 .done(function(obj){
@@ -134,12 +140,24 @@ jQuery(document).ready(function() {
                             $("#tourlist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
                             var ttown= ttown || new tulsa_map(document.getElementById("map_content"));
                             addGeomteries(data.geom.geometries,ttown);
+                            posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);
+                            
                             }
+                        
                         );//end map done
                         
-            });//end page done
+                });//end page done
             $("#tourlist").listview('refresh').trigger( "create" );
         });
+
+        $("#tour_detail").on("pagehide",function(){
+            
+            
+            navigator.geolocation.clearWatch(posWatchID);
+            
+            
+        });
+
     
     
     $("#pages").on("pageinit",function(){

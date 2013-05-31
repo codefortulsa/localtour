@@ -83,6 +83,7 @@ var localwiki = (function () {
         return dfd.promise();
     };
 
+//returns a list of pages
     wiki.pages = function (params){
         
         var dfd = new $.Deferred(),
@@ -97,7 +98,8 @@ var localwiki = (function () {
             })
         return dfd.promise();
     };
-    
+
+//returns a single page    
     wiki.page = function(resource_uri) {
         var dfd = new $.Deferred();
 
