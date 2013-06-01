@@ -57,9 +57,6 @@ jQuery(document).ready(function() {
         return tour_html;
     };
 
-
-
-
 // app functions
    
     var detail_click = function(event) {
@@ -115,7 +112,7 @@ jQuery(document).ready(function() {
                 localwiki.map(obj.map)
                     .done(function (data) {
                         $("#detailist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
-                        var ttown= ttown || new tulsa_map(document.getElementById("map_content"));
+                        var ttown= ttown || new tour_map(document.getElementById("map_content"));
                         var geoJSONlist=data.geom.geometries;
                         addGeomteries(geoJSONlist,ttown);
                         }
@@ -126,39 +123,28 @@ jQuery(document).ready(function() {
     var posWatchID,
     posOptions = {
       enableHighAccuracy: true,
-    };
-    
+    };    
     
     $("#tour_detail").on("pageshow",function(){
-            localwiki.page(localwiki.current_page())
-                .done(function(obj){
-                    $("#page_title").text(obj.name);
-                    
-                    $("#tourlist").html(tour_listitems(obj));  
-                    localwiki.map(obj.map)
-                        .done(function (data) {
-                            $("#tourlist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
-                            var ttown= ttown || new tulsa_map(document.getElementById("map_content"));
-                            addGeomteries(data.geom.geometries,ttown);
-                            posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);
-                            
-                            }
-                        
-                        );//end map done
-                        
-                });//end page done
-            $("#tourlist").listview('refresh').trigger( "create" );
-        });
+        localwiki.page(localwiki.current_page())
+            .done(function(obj){
+                $("#page_title").text(obj.name);
+                $("#tourlist").html(tour_listitems(obj));  
+                localwiki.map(obj.map)
+                    .done(function (data) {
+                        $("#tourlist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
+                        var ttown = ttown || new tour_map(document.getElementById("map_content"));
+                        addGeomteries(data.geom.geometries,ttown);
+                        posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);                            
+                        }                        
+                    );//end map done
+            });//end page done
+        $("#tourlist").listview('refresh').trigger( "create" );
+    });
 
-        $("#tour_detail").on("pagehide",function(){
-            
-            
-            navigator.geolocation.clearWatch(posWatchID);
-            
-            
-        });
-
-    
+    $("#tour_detail").on("pagehide",function(){
+        navigator.geolocation.clearWatch(posWatchID);
+    });
     
     $("#pages").on("pageinit",function(){
         localwiki.pages()
