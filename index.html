@@ -101,12 +101,13 @@
         <div id="tags" data-role="page" data-theme='b'>
             <div data-role="header" data-position="fixed"  data-theme="b" role="banner">
                 <a data-rel="back" ><i class="icon-angle-left"></i></a>
-                <h1 class="ui-title" >
-                Tags
-                </h1>
+                <h1 class="ui-title">Tags</h1>
             </div>
-            <ul id="taglist" class="tour-options" data-role="listview">
+            <ul id="taglist" class="tour-options" data-role="listview" data-filter="true" data-filter-placeholder="Search Tags&hellip;">
             </ul>
+            <div data-theme='b' data-role="popup" id="tags_no_results">
+            	<p>No Tags found</p>
+            </div>
         </div>
         
         <div id="users" data-role="page" data-theme='b'>
