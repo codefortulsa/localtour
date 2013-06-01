@@ -5,14 +5,12 @@ jQuery(document).ready(function() {
       enableHighAccuracy: true,
     };    
 
-// set the localwiki url before anything else can happen
+    // create a new api endpoint
+    var localwiki = new WikiAPI({
+        url: 'http://www.tulsawiki.org'
+    })
 
-    // localwiki.url("https://trianglewiki.org");
-    
-    localwiki.url("http://www.tulsawiki.org");
-
-
-//html render funcions
+    //html render funcions
     var objectas_listitems = function (obj){
         var
         li_html="";
