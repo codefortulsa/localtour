@@ -16,6 +16,7 @@ jQuery(document).ready(function() {
     var objectas_listitems = function (obj){
         var
         li_html="";
+        console.log(obj);
         for (var p in obj){
             li_html+="<li id='"+p+"'><strong>"+p+"</strong>:&nbsp;"+obj[p]+"</li>"        
         };
@@ -25,6 +26,7 @@ jQuery(document).ready(function() {
     var objectas_html = function (obj){
         var
         li_html="";
+        console.log(obj);
         for (var p in obj){
             li_html+="<strong>"+p+"</strong>:&nbsp;"+obj[p]+"</br>"        
         };
@@ -152,7 +154,7 @@ jQuery(document).ready(function() {
         localwiki.pages()
             .done(
                 function(obj){
-                    $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{{resource_uri}}}'>{{name}}</a></li>{{/objects}}",obj));
+                    $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
                     $("#pages li a").on('click', detail_click);                
                     add_more_link($("#pagelist"),obj.meta.next);
                     $("#pagelist").listview('refresh').trigger( "create" );  
@@ -190,7 +192,8 @@ jQuery(document).ready(function() {
                 //     
                 //     
                 // };
-                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{{page}}}'>{{name}}</a></li>{{/objects}}",obj));
+                console.log(obj);
+                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
                 $("#localtours li a").on('click',{"display_page":"tour_detail"}, detail_click);    
                 add_more_link($("#localtours"),obj.meta.next);
                 $("#localtours").listview('refresh').trigger( "create" );
