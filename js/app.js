@@ -1,6 +1,7 @@
 "use strict";
 jQuery(document).ready(function() {
     var posWatchID,
+    tours = [],
     posOptions = {
       enableHighAccuracy: true,
     };    
@@ -42,17 +43,6 @@ jQuery(document).ready(function() {
              "+pages[p][link_name]+"</a></li>"        
         };
         return pages_html;
-    };
-
-    var tour_listitems = function (tour_page,link_uri,link_name){
-        var tour_html="",tpage=tour_page;
-        var tour_list = $(tour_page.content).filter("h2").nextAll().filter("ol");
-        tour_html="<li />"
-        $("li",tour_list).each(function (idx){
-            var a_html = $('<div>').append($('a',this).clone()).remove().html();
-            tour_html += "<li>"+a_html+"</li>"
-        });
-        return tour_html;
     };
 
 // app functions
@@ -121,8 +111,25 @@ jQuery(document).ready(function() {
     $("#tour_detail").on("pageshow",function(){
         localwiki.page(localwiki.current_page())
             .done(function(obj){
+                _.findWhere(tours, {'slug': obj.slug}).items = obj.objects;
+                var tour = _.findWhere(tours, {'slug': obj.slug}),
+                    points = [],
+                    point_lis = $(tour.content).filter('ul, ol').children('li'),
+                    lis = ''
+                for(var _i=0; _i < point_lis.length; _i++){
+                    var point = {}, text, url,
+                        pnt = point_lis.eq(_i);
+
+                    text = pnt.children().not('ul, ol'),
+                    point.name = text.text(),
+                    point.url = text.attr('href');
+                    point.description = pnt.children('ul, ol');
+                    points.push(point);
+                    lis += '<li>' + point.name + '</li>';
+                }
+                tour['points'] = points;
                 $("#page_title").text(obj.name);
-                $("#tourlist").html(tour_listitems(obj));  
+                $("#tourlist").html(lis);
                 
                 localwiki.map(obj.map)
                     .done(function (data) {
@@ -188,6 +195,7 @@ jQuery(document).ready(function() {
                 //     
                 //     
                 // };
+                tours = obj.objects;
                 $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
                 $("#localtours li a").on('click',{"display_page":"tour_detail"}, detail_click);    
                 add_more_link($("#localtours"),obj.meta.next);
