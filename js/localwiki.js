@@ -34,6 +34,7 @@ var WikiAPI = (function () {
         if (!resource && !_.isString(resource)) {
             throw new Error('must call WikiAPI.call_api with a proper resource');
         }
+        // ajax_params = _.defaults(ajax_params, {format: 'json'});
         ajax_params = ajax_params || {};
         return $.ajax({
             type: "get",

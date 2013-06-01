@@ -62,11 +62,12 @@ jQuery(document).ready(function() {
         $.mobile.changePage("#"+display_page);
     };
     
-    var add_more_link = function (listview,resource){
-        $("li:last-child",listview).after("<li>\
-        <a class='ui-link wiki-paginate' data-wiki-next='"+resource+"' >More</a></li>")
-        $(".wiki-paginate").on ("click",next_page); 
+    var add_more_link = function (listview, resource){
+        $("li:last-child", listview).after("<li>\
+        <a class='ui-link wiki-paginate' data-wiki-next='"+resource+"' ><strong>More</strong></a></li>")
+        $(".wiki-paginate").on("click", next_page); 
     };
+
     var next_page = function (event){
         event.preventDefault();
         $.mobile.loading( 'show', {
@@ -79,7 +80,7 @@ jQuery(document).ready(function() {
         localwiki.next(next,calling_list)
             .done(function(caller,obj){
                 caller.html(Mustache.render("{{#objects}}<li><a data-resource_uri=''>{{username}}</a></li>{{/objects}}",obj));
-                $("li a",caller).on('click', detail_click);    
+                $("li a", caller).on('click', detail_click);    
                 $(".wiki-paginate").click(next_page); 
                 add_more_link(caller,obj.meta.next);
                 caller.listview('refresh').trigger( "create" );
@@ -158,10 +159,8 @@ jQuery(document).ready(function() {
             .done(
                 function(obj){
                     $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
-                    $("#pages li a").on('click', detail_click);                
                     add_more_link($("#pagelist"),obj.meta.next);
-                    $("#pagelist").listview('refresh').trigger( "create" );  
-
+                    $("#pagelist").listview('refresh').trigger( "create" );
                 });            
     });   
     
@@ -171,15 +170,50 @@ jQuery(document).ready(function() {
         // localwiki.uri("/api/page/",{"slug__icontains":"Running"}).done(function(data){
         //     debugger;
         // })
-    $("#tags").on("pageinit",function(){    
+
+    $("#tags").on("pageinit",function(){
+        $("#tags").on('click', 'a[data-resource_uri]', detail_click);
+        // grab current tags
         localwiki.tags()
-            .done(
-                function(obj){
-                    $("#taglist").html(objectsetas_listitems(obj,null,"name"));
-                    $("#tags li a").on('click', detail_click);
-                    add_more_link($("#taglist"),obj.meta.next);
-                    $("#taglist").listview('refresh').trigger( "create" );                              
-                });
+            .done(function(obj){
+                var $tagList = $("#taglist");
+                $tagList.html(objectsetas_listitems(obj,null,"name"));
+                // add more link to bottom of list
+                add_more_link($tagList, obj.meta.next);
+                $tagList.listview('refresh').trigger('create');
+                // when a user searches for an item wait before sending an api request
+                $tagList.on('listviewbeforefilter', _.debounce(function(e, data){
+                    var $input = $(data.input),
+                        tag = $input.val().toLowerCase();
+                    // only send requests when we have tag
+                    if (tag && tag.length >= 3) {
+                        $tagList.listview('refresh');
+                        $.mobile.loading('show', {
+                            text: 'Looking for tags…',
+                            textVisible: true,
+                        })
+                        localwiki.call_api('/api/tag', {
+                            'slug__icontains': tag
+                        }).done(function(results){
+                            // Do we have results?
+                            $.mobile.loading('hide');
+                            if (results.meta.total_count <= 0) {
+                                $('#tags_no_results').popup('option', 'positionTo', 'window');
+                                $('#tags_no_results').popup('open');
+                                return
+                            }
+                            $tagList.html(objectsetas_listitems(results, null, 'name'));
+                            if (results.meta.next) {
+                                add_more_link($tagList, results.meta.next);
+                            }
+                            $tagList.listview('refresh');
+                            $tagList.trigger('updatelayout');
+                        }).fail(function(){
+                            $.mobile.loading('hide');
+                        });
+                    }
+                }, 600));
+            });
     });    
 
     $("#tours").on("pageinit",function(){
