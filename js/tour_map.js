@@ -94,31 +94,7 @@ var tour_map = function (element) {
         if (err){
             console.warn('ERROR(' + err.code + '): ' + err.message);
         }
-    },
-    addGeomteries = function (geoJSON) {
-        var pointArray=[];    
-        for (var geom in geoJSON){
-            var gglV = new GeoJSON(geoJSON[geom], {});
-            if (gglV.error){
-                // Handle the error.
-            }else{
-                gglV.setMap(gglMap);
-                if(gglV.position){
-                    pointArray.push(gglV.position);                            
-                }
-                if(gglV.getPaths){
-                    gglV.getPath().forEach(function(position,idx){
-                        pointArray.push(new google.maps.LatLng(position.lat(),position.lng()));                            
-
-                    });
-
-                }
-            }
-
-        }
-        gglMap.fitBounds(findBounds(pointArray));
     };
-    
 
     if (element !== map_element){
         map_element = element;

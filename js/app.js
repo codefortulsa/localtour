@@ -1,5 +1,9 @@
 "use strict";
 jQuery(document).ready(function() {
+    var posWatchID,
+    posOptions = {
+      enableHighAccuracy: true,
+    };    
 
 // set the localwiki url before anything else can happen
 
@@ -43,17 +47,13 @@ jQuery(document).ready(function() {
     };
 
     var tour_listitems = function (tour_page,link_uri,link_name){
-        var tour_html="";
+        var tour_html="",tpage=tour_page;
         var tour_list = $(tour_page.content).filter("h2").nextAll().filter("ol");
         tour_html="<li />"
         $("li",tour_list).each(function (idx){
             var a_html = $('<div>').append($('a',this).clone()).remove().html();
-
             tour_html += "<li>"+a_html+"</li>"
-            
         });
-
-
         return tour_html;
     };
 
@@ -120,22 +120,24 @@ jQuery(document).ready(function() {
         });//end page done
     });
     
-    var posWatchID,
-    posOptions = {
-      enableHighAccuracy: true,
-    };    
-    
     $("#tour_detail").on("pageshow",function(){
         localwiki.page(localwiki.current_page())
             .done(function(obj){
                 $("#page_title").text(obj.name);
                 $("#tourlist").html(tour_listitems(obj));  
+                
                 localwiki.map(obj.map)
                     .done(function (data) {
-                        $("#tourlist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
+                        $("#tourlist li:first-child").before("<li><div><div id='map_content' data-role='content'></div></div></li>");
                         var ttown = ttown || new tour_map(document.getElementById("map_content"));
-                        addGeomteries(data.geom.geometries,ttown);
-                        posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);                            
+                        var gglGeos = new gglGeometries(data.geom.geometries);
+                        
+                        gglGeos.setMap(ttown);
+                        
+                        ttown.fitBounds(gglGeos.bounds());
+                        
+                        posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
+                                                                     
                         }                        
                     );//end map done
             });//end page done
@@ -158,14 +160,13 @@ jQuery(document).ready(function() {
                 });            
     });   
     
-    $("#tags").on("pageinit",function(){
         // localwiki.uri("/api/map/",{"page__page_tags__tags__slug__icontains":"localtour"}).done(function(data){
         //     debugger;
         // })
         // localwiki.uri("/api/page/",{"slug__icontains":"Running"}).done(function(data){
         //     debugger;
         // })
-    
+    $("#tags").on("pageinit",function(){    
         localwiki.tags()
             .done(
                 function(obj){
@@ -179,6 +180,16 @@ jQuery(document).ready(function() {
     $("#tours").on("pageinit",function(){
         localwiki.pages({"page_tags__tags__slug__icontains":"localtour"}).
             done(function(obj){
+                // pages=obj.objects;
+                // for each (var p in pages ){
+                //     //get the location
+                //     localwiki.map(p.map).done(function(){
+                //         
+                //         
+                //     });
+                //     
+                //     
+                // };
                 $("#localtours").html(objectsetas_listitems(obj,"page","name"));
                 $("#localtours li a").on('click',{"display_page":"tour_detail"}, detail_click);    
                 add_more_link($("#localtours"),obj.meta.next);

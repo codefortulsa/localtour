@@ -144,9 +144,7 @@ var localwiki = (function () {
         return dfd.promise();
     };
 
-
-
-    wiki.users = function (callback,params){
+    wiki.users = function (params){
         var dfd = new $.Deferred();
 
         wikiapi("/api/user")
@@ -158,6 +156,20 @@ var localwiki = (function () {
             })
         return dfd.promise();
     };
+
+    wiki.redirect = function (params){
+        var dfd = new $.Deferred();
+
+        wikiapi("/api/redirect")
+            .done( function(data) {
+                dfd.resolve(data);
+            })
+            .fail( function(data) {
+                  dfd.reject(data);
+            })
+        return dfd.promise();
+    };
+
 
     wiki.map = function(resource) {
         var dfd = new $.Deferred();
@@ -173,6 +185,9 @@ var localwiki = (function () {
         }
         return dfd.promise();
     };
+
+
+
 
     wiki.next = function (resource,caller,callback){
         var dfd = new $.Deferred();
