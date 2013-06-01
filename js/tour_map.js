@@ -35,18 +35,18 @@ var tour_map = function (element) {
 
         streetViewControl: true,
         streetViewControlOptions: {
-            position: google.maps.ControlPosition.LEFT_CENTER,
+            position: google.maps.ControlPosition.LEFT_BOTTOM,
         },
 
         mapTypeControl: true,
         mapTypeControlOptions: {
-            position: google.maps.ControlPosition.LEFT_BOTTOM,
+            position: google.maps.ControlPosition.RIGHT_TOP,
         },
 
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL,
-            position: google.maps.ControlPosition.RIGHT_CENTER,
+            position: google.maps.ControlPosition.LEFT_BOTTOM,
         },
     },
 
