@@ -25,7 +25,7 @@ var WikiAPI = (function () {
 
     API.prototype.set_url = function (url){
         if (url){
-            this.options.url=url;                
+            this.options.url=url;
         }
         return this;
     };
@@ -45,7 +45,7 @@ var WikiAPI = (function () {
 
     API.prototype.current_page = function (resource_uri){
         if (resource_uri){
-            this.options.current_page=resource_uri;                
+            this.options.current_page=resource_uri;
         }
         return this.options.current_page;
     };
