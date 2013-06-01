@@ -119,25 +119,56 @@ jQuery(document).ready(function() {
     });
     
     $("#tour_detail").on("pageshow",function(){
+        console.log(localwiki.current_page());
         localwiki.page(localwiki.current_page())
             .done(function(obj){
                 $("#page_title").text(obj.name);
-                $("#tourlist").html(tour_listitems(obj));  
+                $("#tourlist").html(tour_listitems(obj));
+
+                var ttown;
                 
                 localwiki.map(obj.map)
                     .done(function (data) {
+                        //console.log(data);
                         $("#tourlist li:first-child").before("<li><div><div id='map_content' data-role='content'></div></div></li>");
-                        var ttown = ttown || new tour_map(document.getElementById("map_content"));
+                        ttown = ttown || new tour_map(document.getElementById("map_content"));
                         var gglGeos = new gglGeometries(data.geom.geometries);
                         
-                        gglGeos.setMap(ttown);
+                        //gglGeos.setMap(ttown);
                         
                         ttown.fitBounds(gglGeos.bounds());
+
+                        //get list of tour items
+                        var tour_list = $(obj.content).filter("h2").nextAll().filter("ol");
+                        
+                        //extract tour items links
+                        var temp = tour_list.find('a');
+
+                        //loop through each tour item link and add marker to map
+                        temp.each(function (index){
+                            var tour_item_url = $(this).attr('href');
+
+                            //add marker to map
+                            localwiki.map('/api/map/'+tour_item_url)
+                            .done(function (data_1) {
+                                console.log(ttown);
+                                //console.log(data_1);
+                                var gglGeos = new gglGeometries(data_1.geom.geometries);
+                                gglGeos.setMap(ttown);
+                       
+                                }                        
+                            );//end map done
+
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
                                                                      
                         }                        
                     );//end map done
+
+                
+
+                })
+
             });//end page done
         $("#tourlist").listview('refresh').trigger( "create" );
     });
