@@ -56,9 +56,6 @@ jQuery(document).ready(function() {
         } else {
             display_page = "page_detail"
         }
-        
-        //this is a cheat since jqm doesn't allow easy passing of state from page through # redirects
-          // localwiki.current_page(this_uri);
           
         $("#"+display_page).data('resource_uri',this_uri)
         $.mobile.changePage("#"+display_page);
