@@ -8,7 +8,8 @@ var WikiAPI = (function () {
             'search': '/page/search',
             'pages': '/api/page',
             'users': '/api/user',
-            'redirect': '/api/redirect'
+            'redirect': '/api/redirect',
+            'map':'/api/map'
         }
 
         this.options = _.defaults(options, {
@@ -44,13 +45,6 @@ var WikiAPI = (function () {
         })
     };
 
-    API.prototype.current_page = function (resource_uri){
-        if (resource_uri){
-            this.options.current_page=resource_uri;
-        }
-        return this.options.current_page;
-    };
-
     //returns a single page
     API.prototype.page = function (resource_uri){
         var dfd = new $.Deferred(),
@@ -79,19 +73,6 @@ var WikiAPI = (function () {
         }
     };
 
-    API.prototype.map = function(resource) {
-        var dfd = new $.Deferred();
-        if (resource){
-            this.call_api(resource)
-                .done( function(data) {
-                    dfd.resolve(data);
-                })
-                .fail( function(data) {
-                    dfd.reject(data);
-                });
-        }
-        return dfd.promise();
-    };
 
     API.prototype.next = function (resource, caller, callback){
         var dfd = new $.Deferred();

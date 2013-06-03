@@ -58,7 +58,9 @@ jQuery(document).ready(function() {
         }
         
         //this is a cheat since jqm doesn't allow easy passing of state from page through # redirects
-        localwiki.current_page(this_uri);
+          // localwiki.current_page(this_uri);
+          
+        $("#"+display_page).data('resource_uri',this_uri)
         $.mobile.changePage("#"+display_page);
     };
     
@@ -94,59 +96,82 @@ jQuery(document).ready(function() {
 //jqm page behavior     
     
     $("#page_detail").on("pageshow",function(){
-        localwiki.page(localwiki.current_page())
+        localwiki.page($(this).data("resource_uri"))
             .done(function(obj){
                 $("#page_title").text(obj.name);
-                $("#detailist").html(objectas_listitems(obj)).listview('refresh').trigger( "create" );  
-                localwiki.map(obj.map)
-                    .done(function (data) {
-                        $("#detailist li:first-child").before("<li><div id=><div id='map_content' data-role='content'></div></div></li>");
-                        var ttown= ttown || new tour_map(document.getElementById("map_content"));
-                        var geoJSONlist=data.geom.geometries;
-                        addGeomteries(geoJSONlist,ttown);
-                        }
-                    );//end map done
+                $("#detailist").html(obj.content).listview('refresh').trigger( "create" );  
+                $('#detailist a').on('click',{'display_page':'page_detail'}, detail_click);    
+                
+                if (obj.map){
+                    localwiki.map(obj.map)
+                        .done(function (data) {
+                            $("#detailist li:first-child").before("<li><div><div id='map_content' data-role='content'></div></div></li>");
+                            var ttown= ttown || new tour_map(document.getElementById("map_content"));
+                            var pageGeos = new gglGeometries();
+                            pageGeos.addGeos(geoJSONlist);
+                            pageGeos.setMap(ttown);
+                        });//end map done
+                }
         });//end page done
     });
     
     $("#tour_detail").on("pageshow",function(){
-        localwiki.page(localwiki.current_page())
-            .done(function(obj){
-                _.findWhere(tours, {'slug': obj.slug}).items = obj.objects;
-                var tour = _.findWhere(tours, {'slug': obj.slug}),
+        var tourGeos = new gglGeometries();
+        
+        localwiki.page($(this).data("resource_uri"))
+            .done(function(tour_page){
+                var tour = _.findWhere(tours, {'slug': tour_page.slug}),
                     points = [],
                     point_lis = $(tour.content).filter('ul, ol').children('li'),
-                    lis = ''
+                    lis = '';
                 for(var _i=0; _i < point_lis.length; _i++){
                     var point = {}, text, url,
                         pnt = point_lis.eq(_i);
-
                     text = pnt.children().not('ul, ol'),
                     point.name = text.text(),
                     point.url = text.attr('href');
+
+                    localwiki.call_api('/api/map/'+point.url)
+                        .done(function(data){
+                            tourGeos.addGeos(data.geom.geometries);
+                        })
+                        .fail(function (data){
+                            console.log("call_api Fail:",data);
+                        });
+
                     point.description = pnt.children('ul, ol');
                     points.push(point);
-                    lis += '<li>' + point.name + '</li>';
-                }
-                tour['points'] = points;
-                $("#page_title").text(obj.name);
-                $("#tourlist").html(lis);
+                    
+                    lis += '<li><a class="tour_point" data-resource_uri='+point.url+'>' + point.name + '</a></li>';
+                };
                 
-                localwiki.map(obj.map)
+                tour['points'] = points;
+                $("#page_title").text(tour_page.name);
+                if(lis){
+                    $("#tourlist").html(lis);                    
+                }
+                
+                
+                localwiki.call_api(tour_page.map)
                     .done(function (data) {
-                        $("#tourlist li:first-child").before("<li><div><div id='map_content' data-role='content'></div></div></li>");
-                        var ttown = ttown || new tour_map(document.getElementById("map_content"));
-                        var gglGeos = new gglGeometries(data.geom.geometries);
                         
-                        gglGeos.setMap(ttown);
+                        $("#tourlist li:first-child").before("<li><div><div id='tour_map' data-role='content'></div></div></li>");
+
+                        var ttown = new tour_map(document.getElementById("tour_map"));
                         
-                        ttown.fitBounds(gglGeos.bounds());
+                        tourGeos.addGeos(data.geom.geometries);
+                        
+                        tourGeos.setMap(ttown);
+                        
+                        ttown.fitBounds(tourGeos.bounds());
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
                                                                      
-                        }                        
-                    );//end map done
+                    });//end map done
             });//end page done
+        
+        $('#tourlist a.tour_point').on('click',{'display_page':'page_detail'}, detail_click);    
+        
         $("#tourlist").listview('refresh').trigger( "create" );
     });
 
@@ -160,16 +185,17 @@ jQuery(document).ready(function() {
                 function(obj){
                     $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
                     add_more_link($("#pagelist"),obj.meta.next);
+                    $('#pagelist li a').on('click',{'display_page':'page_detail'}, detail_click);    
                     $("#pagelist").listview('refresh').trigger( "create" );
                 });            
     });   
     
-        // localwiki.uri("/api/map/",{"page__page_tags__tags__slug__icontains":"localtour"}).done(function(data){
-        //     debugger;
-        // })
-        // localwiki.uri("/api/page/",{"slug__icontains":"Running"}).done(function(data){
-        //     debugger;
-        // })
+    // localwiki.uri("/api/map/",{"page__page_tags__tags__slug__icontains":"localtour"}).done(function(data){
+    //     debugger;
+    // })
+    // localwiki.uri("/api/page/",{"slug__icontains":"Running"}).done(function(data){
+    //     debugger;
+    // })
 
     $("#tags").on("pageinit",function(){
         $("#tags").on('click', 'a[data-resource_uri]', detail_click);
@@ -217,24 +243,14 @@ jQuery(document).ready(function() {
     });    
 
     $("#tours").on("pageinit",function(){
-        localwiki.pages({"page_tags__tags__slug__icontains":"localtour"}).
-            done(function(obj){
-                // pages=obj.objects;
-                // for each (var p in pages ){
-                //     //get the location
-                //     localwiki.map(p.map).done(function(){
-                //         
-                //         
-                //     });
-                //     
-                //     
-                // };
-                tours = obj.objects;
-                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
-                $("#localtours li a").on('click',{"display_page":"tour_detail"}, detail_click);    
-                add_more_link($("#localtours"),obj.meta.next);
-                $("#localtours").listview('refresh').trigger( "create" );
-            })
+        localwiki.pages({"page_tags__tags__slug":"localtour"}).
+            done(function(response){
+                tours = response.objects;
+                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",response));
+                $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
+                add_more_link($("#localtours"),response.meta.next);
+                $("#localtours").listview('refresh').trigger('create');
+            });
     });
 
 

@@ -37,29 +37,32 @@ var addGeomteries = function (geoJSON, gglMap) {
     gglMap.fitBounds(findBounds(pointArray));
 };
 
-var gglGeometries = function (geoJSON) {
+var gglGeometries = function () {
     var pointArray=[],vectorArray=[];    
     
-    if (geoJSON){
-        for (var geom in geoJSON){
-            var gglV = new GeoJSON(geoJSON[geom], {});
-            if (gglV.error){
-                // Handle the error.
-            }else{
-                vectorArray.push(gglV)                            
-                if(gglV.position){
-                    pointArray.push(gglV.position);
-                }
-                if(gglV.getPaths){
-                    gglV.getPath().forEach(function(position,idx){
-                        pointArray.push(new google.maps.LatLng(position.lat(),position.lng()));                            
-                });
+    this.addGeos = function (geoJSON) {
+        if (geoJSON){
+            for (var geom in geoJSON){
+                var gglV = GeoJSON(geoJSON[geom], {});
+                if (gglV.error){
+                    // Handle the error.
+                }else{
+                    vectorArray.push(gglV)                            
+                    if(gglV.position){
+                        pointArray.push(gglV.position);
+                    }
+                    if(gglV.getPaths){
+                        gglV.getPath().forEach(function(position,idx){
+                            pointArray.push(new google.maps.LatLng(position.lat(),position.lng()));                            
+                    });
 
+                    }
                 }
+
             }
-
         }
-    }
+    };
+    
     this.bounds = function (){
         return findBounds(pointArray);
     };
