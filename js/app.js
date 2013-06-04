@@ -138,11 +138,9 @@ jQuery(document).ready(function() {
 
                     point.description = pnt.children('ul, ol');
                     points.push(point);
-                    
-                    lis += '<li><a class="tour_point" data-resource_uri='+point.url+'>' + point.name + '</a></li>';
                 };
-                
                 tour['points'] = points;
+                lis = Mustache.render(templates.tourPoint,tour)
                 $("#page_title").text(tour_page.name);
                 if(lis){
                     $("#tourlist").html(lis);                    
@@ -182,7 +180,7 @@ jQuery(document).ready(function() {
         localwiki.pages()
             .done(
                 function(obj){
-                    $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
+                    $("#pagelist").html(Mustache.render(templates.pages,obj));
                     add_more_link($("#pagelist"),obj.meta.next);
                     $('#pagelist li a').on('click',{'display_page':'page_detail'}, detail_click);    
                     $("#pagelist").listview('refresh').trigger( "create" );
@@ -245,7 +243,7 @@ jQuery(document).ready(function() {
         localwiki.pages({"page_tags__tags__slug":"localtour"}).
             done(function(response){
                 tours = response.objects;
-                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",response));
+                $("#localtours").html(Mustache.render(templates.pages,response));
                 $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
                 add_more_link($("#localtours"),response.meta.next);
                 $("#localtours").listview('refresh').trigger('create');
