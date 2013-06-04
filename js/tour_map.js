@@ -86,7 +86,7 @@ var tour_map = function (element) {
         if (pos){
             newLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
             user_marker.setPosition(newLatlng);
-            user_accuracy_circle.radius=crd.accuracy;
+            user_accuracy_circle.radius=pos.coords.accuracy;
             // this.map.setCenter(currentLatlng);
         }
     },
