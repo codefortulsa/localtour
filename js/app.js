@@ -146,6 +146,8 @@ jQuery(document).ready(function() {
                 $("#page_title").text(tour_page.name);
                 if(lis){
                     $("#tourlist").html(lis);                    
+                }else{
+		    $("#tourlist").html("<li>No tour stops listed yet.</li>");
                 }
                 
                 
@@ -163,8 +165,8 @@ jQuery(document).ready(function() {
                         ttown.fitBounds(tourGeos.bounds());
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
-                                                                     
                     });//end map done
+		$('#tourlist').listview( "refresh" );
             });//end page done
         
         $('#tourlist a.tour_point').on('click',{'display_page':'page_detail'}, detail_click);    
