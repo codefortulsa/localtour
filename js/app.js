@@ -111,10 +111,21 @@ jQuery(document).ready(function() {
                 }
         });//end page done
     });
+
+    $("#tours").on("pageinit",function(){
+        localwiki.pages({"page_tags__tags__slug":"localtour"}).
+            done(function(response){
+                tours = response.objects;
+                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",response));
+                $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
+                add_more_link($("#localtours"),response.meta.next);
+                $("#localtours").listview('refresh').trigger('create');
+            });
+    });
     
     $("#tour_detail").on("pageshow",function(){
         var tourGeos = new gglGeometries();
-        
+        $("#tourlist").html("");
         localwiki.page($(this).data("resource_uri"))
             .done(function(tour_page){
                 var tour = _.findWhere(tours, {'slug': tour_page.slug}),
@@ -143,9 +154,11 @@ jQuery(document).ready(function() {
                 };
                 
                 tour['points'] = points;
-                $("#page_title").text(tour_page.name);
+                $("#page_title").html(tour_page.name);
                 if(lis){
                     $("#tourlist").html(lis);                    
+                } else {
+                    $("#tourlist").html("<li>No tour stops listed yet.</li>");
                 }
                 
                 
@@ -239,16 +252,6 @@ jQuery(document).ready(function() {
             });
     });    
 
-    $("#tours").on("pageinit",function(){
-        localwiki.pages({"page_tags__tags__slug":"localtour"}).
-            done(function(response){
-                tours = response.objects;
-                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",response));
-                $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
-                add_more_link($("#localtours"),response.meta.next);
-                $("#localtours").listview('refresh').trigger('create');
-            });
-    });
 
 
 }); //end document ready
