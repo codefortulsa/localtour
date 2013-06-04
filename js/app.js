@@ -90,22 +90,34 @@ jQuery(document).ready(function() {
     };
     
 //jqm page behavior     
+    $("#pages").on("pageinit",function(){
+        localwiki.pages()
+            .done(
+                function(obj){
+                    $("#pagelist").html(Mustache.render(templates.pages,obj));
+                    add_more_link($("#pagelist"),obj.meta.next);
+                    $('#pagelist li a').on('click',{'display_page':'page_detail'}, detail_click);    
+                    $("#pagelist").listview('refresh').trigger( "create" );
+                });            
+    });   
     
     $("#page_detail").on("pageshow",function(){
         localwiki.page($(this).data("resource_uri"))
             .done(function(obj){
                 $("#page_title").text(obj.name);
-                $("#detailist").html(obj.content).listview('refresh').trigger( "create" );  
+                $("#detailist").html("<li>"+obj.content+"</li>").listview('refresh').trigger( "create" );  
                 $('#detailist a').on('click',{'display_page':'page_detail'}, detail_click);    
                 
                 if (obj.map){
-                    localwiki.map(obj.map)
+                    localwiki.call_api(obj.map)
                         .done(function (data) {
                             $("#detailist li:first-child").before("<li><div><div id='map_content' data-role='content'></div></div></li>");
-                            var ttown= ttown || new tour_map(document.getElementById("map_content"));
+                            var ttown= tour_map(document.getElementById("map_content"));
                             var pageGeos = new gglGeometries();
-                            pageGeos.addGeos(geoJSONlist);
+                            pageGeos.addGeos(data.geom.geometries);
                             pageGeos.setMap(ttown);
+                            ttown.fitBounds(pageGeos.bounds());
+                            ttwo
                         });//end map done
                 }
         });//end page done
@@ -184,16 +196,6 @@ jQuery(document).ready(function() {
         navigator.geolocation.clearWatch(posWatchID);
     });
     
-    $("#pages").on("pageinit",function(){
-        localwiki.pages()
-            .done(
-                function(obj){
-                    $("#pagelist").html(Mustache.render(templates.pages,obj));
-                    add_more_link($("#pagelist"),obj.meta.next);
-                    $('#pagelist li a').on('click',{'display_page':'page_detail'}, detail_click);    
-                    $("#pagelist").listview('refresh').trigger( "create" );
-                });            
-    });   
     
     // localwiki.uri("/api/map/",{"page__page_tags__tags__slug__icontains":"localtour"}).done(function(data){
     //     debugger;
