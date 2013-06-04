@@ -54,7 +54,7 @@ var WikiAPI = (function () {
                 //fully qualify src with url
                 if (data.content && data.content.indexOf("src=")){
                     var src = data.content.split('src="');
-                    data.content = src.join('src="http://' + api.options.url + '/' + data.name + '/');
+                    data.content = src.join('src="'+ api.options.url + '/' + data.name + '/');
                 }
                 dfd.resolve(data);
             })
