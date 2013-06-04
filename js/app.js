@@ -149,16 +149,14 @@ jQuery(document).ready(function() {
 
                     point.description = pnt.children('ul, ol');
                     points.push(point);
-                    
-                    lis += '<li><a class="tour_point" data-resource_uri='+point.url+'>' + point.name + '</a></li>';
                 };
-                
                 tour['points'] = points;
-                $("#page_title").html(tour_page.name);
+                lis = Mustache.render(templates.tourPoint,tour)
+                $("#page_title").text(tour_page.name);
                 if(lis){
                     $("#tourlist").html(lis);                    
-                } else {
-                    $("#tourlist").html("<li>No tour stops listed yet.</li>");
+                }else{
+		    $("#tourlist").html("<li>No tour stops listed yet.</li>");
                 }
                 
                 
@@ -176,7 +174,6 @@ jQuery(document).ready(function() {
                         ttown.fitBounds(tourGeos.bounds());
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
-                    
                     });//end map done
                 $('#tourlist').listview( "refresh" );
             });//end page done
@@ -194,7 +191,7 @@ jQuery(document).ready(function() {
         localwiki.pages()
             .done(
                 function(obj){
-                    $("#pagelist").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",obj));
+                    $("#pagelist").html(Mustache.render(templates.pages,obj));
                     add_more_link($("#pagelist"),obj.meta.next);
                     $('#pagelist li a').on('click',{'display_page':'page_detail'}, detail_click);    
                     $("#pagelist").listview('refresh').trigger( "create" );
