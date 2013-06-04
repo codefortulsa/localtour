@@ -56,7 +56,6 @@ jQuery(document).ready(function() {
         } else {
             display_page = "page_detail"
         }
-          
         $("#"+display_page).data('resource_uri',this_uri)
         $.mobile.changePage("#"+display_page);
     };
@@ -148,6 +147,7 @@ jQuery(document).ready(function() {
                         });
 
                     point.description = pnt.children('ul, ol');
+                    point.resource_uri = '/api/page/'+point.url
                     points.push(point);
                 };
                 tour['points'] = points;
@@ -158,7 +158,6 @@ jQuery(document).ready(function() {
                 }else{
 		    $("#tourlist").html("<li>No tour stops listed yet.</li>");
                 }
-                
                 
                 localwiki.call_api(tour_page.map)
                     .done(function (data) {
@@ -175,11 +174,9 @@ jQuery(document).ready(function() {
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
                     });//end map done
-                $('#tourlist').listview( "refresh" );
+		$('#tourlist a.tour_point').on('click',{'display_page':'page_detail'}, detail_click);    
+		$('#tourlist').listview('refresh');
             });//end page done
-        
-        $('#tourlist a.tour_point').on('click',{'display_page':'page_detail'}, detail_click);    
-        
         $("#tourlist").listview('refresh').trigger( "create" );
     });
 
