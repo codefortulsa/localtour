@@ -48,7 +48,9 @@ jQuery(document).ready(function() {
 // app functions
    
     var detail_click = function(event) {
-        event.preventDefault();
+        if ($(event.target).attr('rel') != 'external'){
+          event.preventDefault();
+        }
         var this_uri=$(this).data('resource_uri'),display_page;
         
         if (event.data) {
@@ -104,8 +106,11 @@ jQuery(document).ready(function() {
     $("#page_detail").on("pageshow",function(){
         localwiki.page($(this).data("resource_uri"))
             .done(function(obj){
+                // TODO: remove tulsawiki hard-code when we support more localwikis
+                var read_more_wiki = 'tulsawiki.org';
+                var read_more_href = 'http://' + read_more_wiki + '/' + obj.name;
                 $("#page_title").text(obj.name);
-                $("#detailist").html("<li>"+obj.content+"</li>").listview('refresh').trigger( "create" );  
+                $("#detailist").html("<li>"+obj.content+'</li><li><a rel="external" href="'+read_more_href+'">Read More on '+read_more_wiki+'</a></li>').listview('refresh').trigger( "create" );  
                 $('#detailist a').on('click',{'display_page':'page_detail'}, detail_click);    
                 
                 if (obj.map){
