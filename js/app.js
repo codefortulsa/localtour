@@ -140,9 +140,11 @@ jQuery(document).ready(function() {
         localwiki.page($(this).data("resource_uri"))
             .done(function(tour_page){
                 var tour = _.findWhere(tours, {'slug': tour_page.slug}),
+                    tour_name = tour_page.name,
                     points = [],
                     point_lis = $(tour.content).filter('ul, ol').children('li'),
                     lis = '';
+                $("#tour_detail h1.ui-title").html(tour_name);
                 for(var _i=0; _i < point_lis.length; _i++){
                     var point = {}, text, url,
                         pnt = point_lis.eq(_i);
