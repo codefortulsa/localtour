@@ -122,17 +122,25 @@ jQuery(document).ready(function() {
                             pageGeos.addGeos(data.geom.geometries);
                             pageGeos.setMap(ttown);
                             ttown.fitBounds(pageGeos.bounds());
-                            ttwo
                         });//end map done
                 }
         });//end page done
     });
 
     $("#tours").on("pageinit",function(){
-        localwiki.pages({"page_tags__tags__slug":"localtour"}).
+        // localwiki.pages({"page_tags__tags__slug":"localtour"}).
+        localwiki.map({"page__page_tags__tags__slug":"localtour","full":"true"}).
             done(function(response){
                 tours = response.objects;
-                $("#localtours").html(Mustache.render("{{#objects}}<li><a data-resource_uri='{{resource_uri}}'>{{name}}</a></li>{{/objects}}",response));
+                
+                _.each(tours,function(page){
+                    var pageGeos = new gglGeometries();
+                    pageGeos.addGeos(page.geom.geometries);                    
+                    page.lat = pageGeos.center().lat();
+                    page.lng = pageGeos.center().lng()
+                });
+                
+                $("#localtours").html(Mustache.render(templates.tours,response));
                 $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
                 add_more_link($("#localtours"),response.meta.next);
                 $("#localtours").listview('refresh').trigger('create');

@@ -62,6 +62,21 @@ var gglGeometries = function () {
             }
         }
     };
+
+    this.center = function (){
+        var maxLat=-90,minLat=90,maxLng=-180,minLng=180,center={};
+        
+        _.each(pointArray,function(pnt){
+            if (pnt.lat()>maxLat){maxLat=pnt.lat()}
+            if (pnt.lat()<minLat){minLat=pnt.lat()}
+            if (pnt.lng()<minLng){minLng=pnt.lng()}
+            if (pnt.lng()>maxLng){maxLng=pnt.lng()}
+        });
+        center.lat = minLat + ((maxLat - minLat) / 2);
+        center.lng = minLng + ((maxLng - minLng) / 2);
+        return new google.maps.LatLng(center.lat,center.lng);
+    };
+
     
     this.bounds = function (){
         return findBounds(pointArray);
