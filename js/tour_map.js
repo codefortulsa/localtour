@@ -71,14 +71,14 @@ var tour_map = function (element) {
      },
     user_circle_options= {
         radius: 2,  
-        fillColor: 'greenyellow',
+        fillColor: 'blue',
         fillOpacity: 1,
         strokeColor:"black",
         strokeOpacity:1
     },
     accuracy_circle_options = {
        radius: 10,  
-       fillColor: 'greenyellow',
+       fillColor: 'aqua',
        fillOpacity: 0.3,
        strokeOpacity:0
     },

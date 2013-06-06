@@ -1,10 +1,26 @@
 "use strict";
 jQuery(document).ready(function() {
-    var posWatchID,
+    var posWatchID, 
+    distWatchID,
     tours = [],
-    posOptions = {
-      enableHighAccuracy: true,
-    };    
+    posOptions = {enableHighAccuracy: true};    
+
+    var appPosChange = function(newPosition) {
+        if (pos){
+            newLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            user_marker.setPosition(newLatlng);
+            user_accuracy_circle.radius=pos.coords.accuracy;
+            // this.map.setCenter(currentLatlng);
+        }
+    },
+    var appPosFail = function (err) {
+        if (err){
+            console.warn('ERROR(' + err.code + '): ' + err.message);
+        }
+    };
+
+
+    distWatchID = navigator.geolocation.watchPosition(appPosChange, appPosFail, posOptions);       
 
     // create a new api endpoint
     var localwiki = new WikiAPI({
@@ -12,23 +28,6 @@ jQuery(document).ready(function() {
     })
 
     //html render funcions
-    var objectas_listitems = function (obj){
-        var
-        li_html="";
-        for (var p in obj){
-            li_html+="<li id='"+p+"'><strong>"+p+"</strong>:&nbsp;"+obj[p]+"</li>"        
-        };
-        return li_html;
-    };
-    
-    var objectas_html = function (obj){
-        var
-        li_html="";
-        for (var p in obj){
-            li_html+="<strong>"+p+"</strong>:&nbsp;"+obj[p]+"</br>"        
-        };
-        return li_html;
-    };
     
     var objectsetas_listitems = function (obj,link_uri,link_name){
         var pages_html="",
@@ -200,6 +199,7 @@ jQuery(document).ready(function() {
                         ttown.fitBounds(tourGeos.bounds());
                         
                         posWatchID = posWatchID || navigator.geolocation.watchPosition(ttown.posChange, ttown.posFail, posOptions);       
+
                     });//end map done
 		$('#tourlist a.tour_point').on('click',{'display_page':'page_detail'}, detail_click);    
 		$('#tourlist').listview('refresh');
