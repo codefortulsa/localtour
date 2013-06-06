@@ -3,16 +3,17 @@ jQuery(document).ready(function() {
     var posWatchID, 
     distWatchID,
     tours = [],
+    appPosition,
     posOptions = {enableHighAccuracy: true};    
 
-    var appPosChange = function(newPosition) {
+
+    var appPosChange = function(pos) {
         if (pos){
-            newLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-            user_marker.setPosition(newLatlng);
-            user_accuracy_circle.radius=pos.coords.accuracy;
-            // this.map.setCenter(currentLatlng);
+            var newLatlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            $("#localtours li").trigger({type:"newPosition",position:newLatlng});
         }
-    },
+    };
+    
     var appPosFail = function (err) {
         if (err){
             console.warn('ERROR(' + err.code + '): ' + err.message);
@@ -143,6 +144,12 @@ jQuery(document).ready(function() {
                 $('#localtours li a').on('click',{'display_page':'tour_detail'}, detail_click);    
                 add_more_link($("#localtours"),response.meta.next);
                 $("#localtours").listview('refresh').trigger('create');
+                
+                $("#localtours li").on("newPosition",function(e){
+                   var li_position = new google.maps.LatLng($(this).data("center-lat"),$(this).data("center-lng"));
+                   var distance_to_page=google.maps.geometry.spherical.computeDistanceBetween(li_position,e.position);
+                   $(".distance",this).html(Math.round(distance_to_page,-1)+" meters from you.");
+                });
             });
     });
     
@@ -151,10 +158,9 @@ jQuery(document).ready(function() {
         $("#tourlist").html("");
         localwiki.page($(this).data("resource_uri"))
             .done(function(tour_page){
-                var tour = _.findWhere(tours, {'slug': tour_page.slug}),
-                    tour_name = tour_page.name,
+                    var tour_name = tour_page.name,
                     points = [],
-                    point_lis = $(tour.content).filter('ul, ol').children('li'),
+                    point_lis = $(tour_page.content).filter('ul, ol').children('li'),
                     lis = '';
                 $("#tour_detail h1.ui-title").html(tour_name);
                 for(var _i=0; _i < point_lis.length; _i++){
@@ -176,13 +182,13 @@ jQuery(document).ready(function() {
                     point.resource_uri = '/api/page/'+point.url
                     points.push(point);
                 };
-                tour['points'] = points;
-                lis = Mustache.render(templates.tourPoint,tour)
+                tour_page.points = points;
+                lis = Mustache.render(templates.tourPoint,tour_page)
                 $("#page_title").text(tour_page.name);
                 if(lis){
                     $("#tourlist").html(lis);                    
                 }else{
-		    $("#tourlist").html("<li>No tour stops listed yet.</li>");
+        		    $("#tourlist").html("<li>No tour stops listed yet.</li>");
                 }
                 
                 localwiki.call_api(tour_page.map)
